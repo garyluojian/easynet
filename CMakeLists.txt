@@ -8,6 +8,8 @@ include_directories(/usr/include/
         ./net/
         ./sys/)
 
+set(CMAKE_CXX_FLAGS -std=c++11)
+
 set(NET_SRCS net/easynet_tcpserver.cc
         net/easynet_acceptor.cc
         net/easynet_channel.cc
@@ -19,7 +21,8 @@ set(NET_SRCS net/easynet_tcpserver.cc
         net/easynet_timer.cc
         net/easynet_timerid.cc
         net/easynet_tcpclient.cc
-        net/easynet_udpserver.cc)
+        net/easynet_udpserver.cc
+        net/easynet_ignoresighup.cc)
 
 set(SYS_SRCS sys/easynet_condition.cc
         sys/easynet_thread.cc

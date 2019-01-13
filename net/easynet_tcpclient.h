@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 #include <functional>
+#include <glog/logging.h>
 
 namespace easynet
 {
@@ -73,9 +74,14 @@ namespace easynet
                 _disconnect_callback(conn);
             }
 
-            void defaultMessageCallback(std::shared_ptr<TcpConnection> conn, const void *data, size_t len){}
-            void defalutConnectCallback(std::shared_ptr<TcpConnection> ){}
-            void defalutDisconnectCallback(std::shared_ptr<TcpConnection>){}
+            void defaultMessageCallback(std::shared_ptr<TcpConnection> conn, const void *data, size_t len)
+            {
+                (void)data;
+                (void)len;
+                LOG(INFO)<<"Recv some data from "<<conn->getConnectionName();
+            }
+            void defalutConnectCallback(std::shared_ptr<TcpConnection> conn){(void)conn;}
+            void defalutDisconnectCallback(std::shared_ptr<TcpConnection> conn){(void)conn;}
 
         private:
             EventLoop *_loop;

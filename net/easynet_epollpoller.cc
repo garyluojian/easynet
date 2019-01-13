@@ -42,7 +42,7 @@ namespace easynet
             event.data.ptr = static_cast<void*>(c);
 
             rc = epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, c->fd(), &event);
-            if(EEXIST == rc)
+            if(0 != rc && errno == EEXIST)
             {
                 rc = epoll_ctl(_epoll_fd, EPOLL_CTL_MOD, c->fd(), &event);
             }

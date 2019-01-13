@@ -14,7 +14,8 @@ namespace easynet
     namespace net
     {
         Socket::Socket()
-            : _fd(-1)
+            : _fd(-1),
+            _type(SOCK_TYPE_UNKNOW)
         {      
         }
 
@@ -94,7 +95,7 @@ namespace easynet
             if(rc < 0) assert(false);
         }
 
-        void Socket::setTcpNodelay()
+        void Socket::setTcpNoDelay()
         {
             int rc;
             int off = 1;
@@ -165,9 +166,10 @@ namespace easynet
             return fd;
         }
 
-        int Socket::connect(const std::string &peer_ip, unsigned short peer_port)
+        Socket::CONN_ERROR_CODE Socket::connect(const std::string &peer_ip, unsigned short peer_port)
         {
             int rc;
+            CONN_ERROR_CODE err_code = CONN_OK;
             struct sockaddr_in svr_addr;
 
             memset(&svr_addr, 0, sizeof(svr_addr));
@@ -180,18 +182,20 @@ namespace easynet
                 switch(errno)
                 {
                     case EINPROGRESS:
-                        rc = 1;
+                        err_code = CONN_DOING;
                         break;
                     case EINTR:
                     case ETIMEDOUT:
                     case ECONNREFUSED:
-                        rc = -1;
+                    case EAGAIN:
+                        rc = CONN_NEED_RETRY;
                     default:
-                        rc = -2;
+                        LOG(FATAL)<<"connect to "<<peer_ip<<" "<<peer_port<<" failed. err_msg: "<<strerror(errno);
+                        rc = CONN_ERROR;
                 }
             }
 
-            return rc;
+            return err_code;
         }
     }
 }

@@ -6,6 +6,7 @@ namespace easynet
     {
         TcpClient::TcpClient(easynet::net::EventLoop *loop, const std::string &server_ip, unsigned short server_port)
             : _loop(loop), _server_ip(server_ip), _server_port(server_port),
+            _connection(new TcpConnection(loop)),
             _message_callback(std::bind(&TcpClient::defaultMessageCallback, this, std::placeholders::_1,
                     std::placeholders::_2, std::placeholders::_3)),
             _connect_done_callback(std::bind(&TcpClient::defalutConnectCallback, this, std::placeholders::_1)),

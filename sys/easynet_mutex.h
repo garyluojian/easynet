@@ -14,23 +14,23 @@ namespace easynet
             easynet_mutex()
             {
                 int rc = pthread_mutex_init(&_native_mutex_handle, NULL);
-                //LOG_IF(FATAL, rc != 0)<<"pthread_mutex_init failed, rc = "<<rc;
+                LOG_IF(FATAL, rc != 0)<<"pthread_mutex_init failed, rc = "<<rc;
             }
             ~easynet_mutex()
             {
                 int rc = pthread_mutex_destroy(&_native_mutex_handle);
-                //LOG_IF(FATAL, rc != 0)<<"pthread_mutex_destroy failed, rc = "<<rc;
+                LOG_IF(FATAL, rc != 0)<<"pthread_mutex_destroy failed, rc = "<<rc;
             }
 
             void lock()
             {
                 int rc = pthread_mutex_lock(&_native_mutex_handle);
-                //LOG_IF(FATAL, rc != 0)<<"pthread_mutex_lock failed, rc = "<<rc;
+                LOG_IF(FATAL, rc != 0)<<"pthread_mutex_lock failed, rc = "<<rc;
             }
             void unlock()
             {
                 int rc = pthread_mutex_unlock(&_native_mutex_handle);
-                //LOG_IF(FATAL, rc != 0)<<"pthread_mutex_unlock failed, r = "<<rc;
+                LOG_IF(FATAL, rc != 0)<<"pthread_mutex_unlock failed, r = "<<rc;
             }
             pthread_mutex_t *get_mutex_native_handle()
             {

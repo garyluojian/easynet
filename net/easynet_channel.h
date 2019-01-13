@@ -17,6 +17,7 @@ namespace easynet
 
             public:
                 int fd() {return _fd;}
+                void setFd(int fd) {_fd = fd;};
                 void readEventFired() 
                 {
                     if(_monitor_events & read_event)

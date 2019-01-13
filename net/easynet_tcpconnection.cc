@@ -44,9 +44,13 @@ namespace easynet
 
         int TcpConnection::send(const void *data, size_t data_len)
         {
+            if(_connection_status != connectedStatus)
+            {
+                return -1;
+            }
             {
                 easynet::sys::easynet_scoped_mutex scoped_mutex(_output_buffer_mutex);
-                _output_buffer.writeData(&data_len, sizeof(data_len)); //FIXME host to net
+                _output_buffer.writeData(&data_len, 4); //FIXME host to net
                 _output_buffer.writeData(data, data_len);
             }
             _channel.enableWrite();
@@ -227,26 +231,24 @@ namespace easynet
                 _loop->runFunc(std::bind(&TcpConnection::onConnectDone, this));
                 return;
             }
+            setPeerAddr(ip, port);
+            _channel.setFd(_socket.fd());
             rc = _socket.connect(ip, port);
             switch(rc)
             {
-                case 0:
+                case Socket::CONN_OK:
                     //connected OK
                     _connection_status = connectedStatus;
-                    if(_on_connected_callback)
-                    {
-                        _on_connected_callback(shared_from_this());
-                    }
                     _loop->runFunc(std::bind(&TcpConnection::onConnectDone, this));
                      _channel.enableRead();
                     break;
-                case 1:
+                case Socket::CONN_DOING:
                     //connecteding
                     _connection_status = connectingStatus;
                     _channel.enableWrite();
                     _loop->runAfter(std::bind(&TcpConnection::connectingTimeout, this), 5000);
                     break;
-                case -1:
+                case Socket::CONN_NEED_RETRY:
                     //error, retry
                     if(_is_autoreconn && (_autoreconn_times - _reconned_times > 0))
                     {
@@ -268,6 +270,7 @@ namespace easynet
         {
             _connection_status = initStatus;
             _channel.disableAll();
+            _socket.close();
         }
     }
 }

@@ -13,7 +13,7 @@ class easynet_thread
 {
 public:
     using thread_func = std::function<void(void*)>;
-    explicit easynet_thread(thread_func callback, void *data, const std::string &thread_num);
+    explicit easynet_thread(thread_func callback, void *data, const std::string &thread_name);
     ~easynet_thread();
 
     void start();

@@ -1,5 +1,6 @@
 #include "easynet_tcpconnection.h"
 #include "easynet_eventloop.h"
+#include "easynet_endian.h"
 #include <unistd.h>
 #include <assert.h>
 #include <glog/logging.h>
@@ -49,8 +50,9 @@ namespace easynet
                 return -1;
             }
             {
+                size_t header_size = easynet::sys::host2Net(static_cast<int32_t>(data_len));
                 easynet::sys::easynet_scoped_mutex scoped_mutex(_output_buffer_mutex);
-                _output_buffer.writeData(&data_len, 4); //FIXME host to net
+                _output_buffer.writeData(&header_size, sizeof(int32_t));
                 _output_buffer.writeData(data, data_len);
             }
             _channel.enableWrite();
@@ -78,9 +80,9 @@ namespace easynet
                         {
                             _streamer._state = easynet_tcpstreamer::DATA;
                             _streamer._offset = 0;
-                            //FIXME bigendian to littleendian
                             size_t data_len = 0;
                             memcpy(&data_len, _streamer._header, sizeof(_streamer._header));
+                            data_len = easynet::sys::net2Host(static_cast<int32_t>(data_len));
                             _streamer._want = data_len;
                             _streamer._data.reserve(data_len);
                         }

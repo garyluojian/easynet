@@ -25,13 +25,13 @@ namespace easynet
             _started = true;
             int rc = pthread_create(&_thread_id, NULL,
                     &easynet_thread::hook, this);
-            //LOG_IF(FATAL, rc != 0)<<"Create pthread fail, rc = "<<rc;
+            LOG_IF(FATAL, rc != 0)<<"Create pthread fail, rc = "<<rc;
         }
 
         void easynet_thread::join()
         {
             int rc = pthread_join(_thread_id, NULL);
-            //LOG_IF(FATAL, rc != 0)<<"Join thread fail, rc = "<<rc;
+            LOG_IF(FATAL, rc != 0)<<"Join thread fail, rc = "<<rc;
         }
 
         void *easynet_thread::hook(void *args)

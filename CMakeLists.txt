@@ -8,7 +8,7 @@ include_directories(/usr/include/
         ./net/
         ./sys/)
 
-set(CMAKE_CXX_FLAGS -std=c++11)
+set(CMAKE_CXX_FLAGS "-std=c++11 -g -O2 -Wall -DLITTLE_ENDAIN")
 
 set(NET_SRCS net/easynet_tcpserver.cc
         net/easynet_acceptor.cc
